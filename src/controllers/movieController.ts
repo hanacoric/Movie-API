@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import Movie from "../models/movie"; // Import Movie model
+import { connectDB } from "../config/db";
 
 // Create a new movie
 export const createMovie = async (
@@ -8,11 +9,12 @@ export const createMovie = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    await connectDB();
     const { title, year, genre, actors, director } = req.body;
     const newMovie = new Movie({ title, year, genre, actors, director });
 
     const savedMovie = await newMovie.save();
-    res.status(201).json(savedMovie); // Return the created movie
+    res.status(200).json(savedMovie); // Return the created movie
   } catch (error) {
     console.error("Error in createMovie:", error); // Log the error
     res.status(500).json({ message: "Internal Server Error", error });
@@ -26,6 +28,7 @@ export const getMovies = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    await connectDB();
     const movies = await Movie.find(); // get all movies from the database
     res.status(200).json(movies);
   } catch (error) {
@@ -40,6 +43,7 @@ export const getMovie = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    await connectDB();
     const movie = await Movie.findById(req.params.id); // get a single movie by id
     if (!movie) {
       res.status(404).json({ message: "Movie not found" }); // return a 404 error if movie is not found
@@ -58,6 +62,7 @@ export const updateMovie = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    await connectDB();
     const updatedMovie = await Movie.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -80,6 +85,7 @@ export const deleteMovie = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    await connectDB();
     const deletedMovie = await Movie.findByIdAndDelete(req.params.id);
     if (!deletedMovie) {
       res.status(404).json({ message: "Movie not found" });
