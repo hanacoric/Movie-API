@@ -18,6 +18,6 @@ const movieSchema = new mongoose.Schema<IMovie>({
   director: { type: String, required: true },
 });
 
-// Create a model from the schema
+// Create a model from the schemaaa
 const Movie = mongoose.model<IMovie>("Movie", movieSchema);
 export default Movie;
